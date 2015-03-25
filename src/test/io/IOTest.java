@@ -3,6 +3,8 @@ package test.io;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,8 +21,11 @@ import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.io.RandomAccessFile;
 import java.io.Reader;
+import java.io.SequenceInputStream;
 import java.io.Writer;
 import java.util.Scanner;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class IOTest {
 	private static String filePath="/home/zeng_weifeng/Downloads/tmp/test/"+File.separator;;
@@ -240,6 +245,95 @@ public class IOTest {
 		System.out.println(str);
 	}
 	
+	public static void testDateInOutputStream() throws IOException{
+		String path = "/home/zeng_weifeng/tmp.txt";
+		File file = new File(path);
+		char[] ch = { 'A', 'B', 'C', 'D', 'E', 'F', 'G'};
+		DataOutputStream out = new DataOutputStream(new FileOutputStream(file));
+		for(char c : ch)
+			out.writeChar(c);
+		out.close();
+		
+		DataInputStream input = new DataInputStream(new FileInputStream(file));
+		char[] chi = new char[10];
+		int count = 0;
+		char c;
+		while((c=input.readChar()) != 'G'){
+			chi[count++]=c;
+		}
+		input.close();
+		System.out.println(chi);
+	}
+	
+	public static void testSequenceInputStream() throws IOException{
+		String path1 = "/home/zeng_weifeng/tmp.txt";
+		File file1 = new File(path1);
+		String path2 = "/home/zeng_weifeng/url.txt";
+		File file2 = new File(path2);
+		String path3 = "/home/zeng_weifeng/seq.txt";
+		File file3 = new File(path3);
+		InputStream input1 = new FileInputStream(file1);
+		InputStream input2 = new FileInputStream(file2);
+		OutputStream output = new FileOutputStream(file3);
+		SequenceInputStream sis = new SequenceInputStream(input1, input2);
+//		byte[] buf = new byte[10];
+//		int t = 0;
+//		while((t=sis.read(buf))!= -1){
+//			output.write(buf, 0, t);
+//		}
+		int temp = 0;
+		while ((temp = sis.read()) != -1) {
+			output.write(temp);
+		}
+		input1.close();
+		input2.close();
+		output.close();
+		sis.close();
+	}
+	
+	public static void testZipOutputStream() throws IOException{
+		String path = "/home/zeng_weifeng/tmp.txt";
+		File file = new File(path);
+		String zpath = "/home/zeng_weifeng/tmp.zip";
+		File zfile = new File(zpath);
+		InputStream input = new FileInputStream(path);
+		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zfile));
+		out.putNextEntry(new ZipEntry(file.getName()));
+		out.setComment("only one file tmp.txt");
+		byte[] buf = new byte[10];
+		int t = 0;
+		while((t=input.read(buf))!= -1){
+			out.write(buf, 0, t);
+		}
+		input.close();
+		out.close();
+	}
+	
+	public static void testZipOutputStreamByMultiFile() throws IOException{
+		String path = "/home/zeng_weifeng/Note";
+		File file = new File(path);
+		String zpath = "/home/zeng_weifeng/Note/note.zip";
+		File zfile = new File(zpath);
+		InputStream input = null;
+		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zfile));
+		byte[] buf = new byte[10];
+		int t = 0;
+		if(file.isDirectory()){
+			File[] files = file.listFiles();
+			for(File f : files){
+				if(f.isDirectory())
+					continue;
+				input = new FileInputStream(f);
+				out.putNextEntry(new ZipEntry(f.getName()));
+				while((t = input.read(buf)) != -1){
+					out.write(buf, 0, t);
+				}
+				input.close();
+			}
+			out.close();
+		}
+	}
+	
 	public static void main(String[] args) throws IOException{
 //		testRandomAccessFile();
 //		testByteStr();
@@ -260,6 +354,10 @@ public class IOTest {
 //		testBufferedReader();
 //		testScaner();
 //		testScannerFromFile();
+//		testDateInOutputStream();
+//		testSequenceInputStream();
+//		testZipOutputStream();
+		testZipOutputStreamByMultiFile();
 	}
 }
 
