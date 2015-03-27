@@ -13,7 +13,34 @@ public class TestStr {
 //		testUrl(url);
 //		testUrl(url2);
 //		testTS();
-		testInt();
+//		testInt();
+		testEqual();
+	}
+	
+	public static void testEqual(){
+		String s1 = "hello";
+		String s2 = new String("hello");
+		String s3 = new String("hello");
+		String s4 = "hello";
+		System.out.println((s1 == s2) + "   " + s1.equals(s2));
+		System.out.println((s3 == s2) + "   " + s3.equals(s2));
+		System.out.println((s1 == s4) + "   " + s1.equals(s4));
+		System.out.println();
+		Integer i1 = 12;
+		Integer i2 = 12;
+		Integer i3 = new Integer(12);
+		Integer i4 = new Integer(12);
+		System.out.println((i1 == i2) + "   " + i1.equals(i2));
+		System.out.println((i3 == i2) + "   " + i3.equals(i2));
+		System.out.println((i3 == i4) + "   " + i3.equals(i4));
+		System.out.println();
+		Float f1 = 1.7f;
+		Float f2 = 1.7f;
+		Float f3 = new Float(1.7f);
+		Float f4 = new Float(1.7f);
+		System.out.println((f1 == f2) + "   " + f1.equals(f2));
+		System.out.println((f3 == f2) + "   " + f3.equals(f2));
+		System.out.println((f3 == f4) + "   " + f3.equals(f4));
 	}
 	
 	public static void test(){
