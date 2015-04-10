@@ -2,7 +2,10 @@ package test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.google.gson.Gson;
 import com.googlecode.jsonrpc4j.JsonRpcHttpClient;
 
 public class TestJsonRpc {
@@ -21,8 +24,22 @@ public class TestJsonRpc {
 		System.out.println("userId: " + user.getId() + "   username: " + user.getUsername() + " password: " + user.getPassword());
 	}
 	
+	public static void testGson(){
+		Gson gson = new Gson();
+		Map map = new HashMap();
+		map.put("id", 1);
+		map.put("jsonrpc", "2.0");
+		map.put("method", "test");
+		Map params = new HashMap();
+		map.put("params", params);
+		params.put("type", "system");
+		String str = gson.toJson(map);
+		System.out.println(str);
+	}
+	
 	
 	public static void main(String[] args) throws Throwable{
-		testJsonRpcClient();
+//		testJsonRpcClient();
+		testGson();
 	}
 }
